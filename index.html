@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple to do app</title>
+    <link rel="stylesheet" href="index.css" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./bootstrap.min.css" />
+
+    <!-- Bootstrap JS -->
+    <script src="./bootstrap.bundle.min.js"></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <h3 class="cur-date"></h3>
+    <p class="casual-question"></p>
+    <h4>To do:</h4>
+    <div class="buttons">
+      <button class="add-task">Add new task!</button>
+      <!-- <button class="wipe-memory">Wipe memory!</button> -->
+      <button class="delete-last">Delete last task</button>
+      <!-- <button class="test">Test</button> -->
+      <button class="clear-list">Clear the list</button>
+    </div>
+    <form class="add-task-form display-none">
+      <h5>Write down the new task below</h5>
+      <input
+        class="add-task-input"
+        type="text"
+        value=""
+        placeholder="add new task"
+      />
+    </form>
+    <ul class="list">
+      <li>Task 1</li>
+      <li>Task 2</li>
+      <li>Task 3</li>
+    </ul>
+    <div
+      class="alert alert-success alert-dismissible fade show alert-custom display-none"
+    >
+      <button class="btn-close alert-custom-close"></button>
+      Congratulations! You have successfully completed another task! Keep going!
+    </div>
+    <div class="overlay display-none"></div>
+  </body>
+</html>
