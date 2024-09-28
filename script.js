@@ -1,7 +1,6 @@
 "use strict";
 
-let tasks = [];
-let newTaskObject = {};
+let tasks = [{ taskName: "test", completed: true, taskId: 1234 }];
 
 const addTask = document.querySelector(".add-task");
 const form = document.querySelector(".add-task-form");
@@ -17,8 +16,14 @@ const clearList = document.querySelector(".clear-list");
 
 // create a function that takes the user's input and adds it to the tasks array
 
+// function that adds the updated array to the local storage
+
+const addToLocalStorage = function () {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+
 const addNewTaskToArray = function (task) {
-  newTaskObject = {
+  const newTaskObject = {
     taskName: task,
     completed: false,
     taskId: Number(
@@ -28,8 +33,10 @@ const addNewTaskToArray = function (task) {
     ),
   };
   tasks.push(newTaskObject);
-  // writing the array in the local storage
-  localStorage.setItem("tasks", JSON.stringify(tasks));
+  addToLocalStorage();
+
+  // render the updated tasks
+  renderTasks();
 };
 
 const deleteLastTask = function () {
@@ -38,16 +45,19 @@ const deleteLastTask = function () {
 };
 
 // render the tasks on the page
+// function to clean the input
+const cleanInput = () => (addInput.value = "");
+
 const renderTasks = function () {
   listTasks.innerHTML = "";
   tasks.forEach((task) =>
     listTasks.insertAdjacentHTML(
       "beforeend",
-      `<li class=${task.completed ? "completed" : "to-be-done"}>
-      <span data-id="${task.taskId}">${task.taskName}</span>
+      `<li class="task ${task.completed ? "completed" : "not-completed"}">
+      <div class="task-name" data-id="${task.taskId}">${task.taskName}</div>
       <div class="functionality">
-      <button data-id="${task.taskId}" class="delete">Delete</button>
-      <button data-id="${task.taskId}" class="mark-completed" ${
+        <button data-id="${task.taskId}" class="delete">Delete</button>
+        <button data-id="${task.taskId}" class="mark-completed" ${
         task.completed ? "disabled" : ""
       }>Mark as completed</button>
       <button data-id="${task.taskId}" class="unmark ${
@@ -57,31 +67,8 @@ const renderTasks = function () {
       </li>`
     )
   );
-  // clean the input
-  addInput.value = "";
 };
 
-renderTasks();
-
-// const renderTasks2 = function (arr) {
-//   listTasks.innerHTML = "";
-//   arr.forEach((obj) => {
-//     listTasks.insertAdjacentHTML(
-//       "beforeend",
-//       `<li>
-//       <span data-id="${obj.taskId}">${obj.taskName}</span>
-//       <button data-id="${obj.taskId}" class="delete">Delete</button>
-//       <button data-id="${obj.taskId}" class="delete">Delete</button>
-//       </li>`
-//     );
-//   });
-
-//   // clean the input
-//   addInput.value = "";
-// };
-
-// TO DO: Create a toast that display a congratulating message every time a task is completed: done
-// TO DO: make the toast automatically go away in 3 seconds: done
 const openToast = function () {
   toast.classList.remove("display-none");
   overlay.classList.remove("display-none");
@@ -100,17 +87,21 @@ const openCloseToastAuto = function () {
 };
 
 closeToastButton.addEventListener("click", closeToast);
+overlay.addEventListener("click", closeToast);
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") closeToast();
+});
 
 // function to remove an individual task
-
 document.querySelector(".list").addEventListener("click", function (e) {
   // removing individual tasks
   if (e.target.classList.contains("delete")) {
-    const itemToRemove = Number(e.target.dataset.id);
-    const index = tasks.findIndex((obj) => obj.taskId === itemToRemove);
-    tasks.splice(index, 1);
-    // re-writing the "tasks" in localStorage
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    const IDofItemToRemove = Number(e.target.dataset.id);
+    const indexOfTheItemToRemove = tasks.findIndex(
+      (obj) => obj.taskId === IDofItemToRemove
+    );
+    tasks.splice(indexOfTheItemToRemove, 1);
+    addToLocalStorage();
     renderTasks();
   }
   // marking tasks as completed
@@ -118,59 +109,75 @@ document.querySelector(".list").addEventListener("click", function (e) {
     // display a congratulations message
     openCloseToastAuto();
 
-    const toRemove = Number(e.target.dataset.id);
-    // find the index of the task that was marked as completed
-    const index = tasks.findIndex((obj) => obj.taskId === toRemove);
-    tasks[index].completed = true;
+    const IDofItemToMarkCompleted = Number(e.target.dataset.id);
+    const indexOfItemToMarkCompleted = tasks.findIndex(
+      (obj) => obj.taskId === IDofItemToMarkCompleted
+    );
+    tasks[indexOfItemToMarkCompleted].completed = true;
 
     renderTasks();
-    // update completed tasks in localStorage
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    addToLocalStorage();
   }
 
   // unmark functionality
   if (e.target.classList.contains("unmark")) {
-    const toUnmark = Number(e.target.dataset.id);
-
+    const IDofItemtoUnmark = Number(e.target.dataset.id);
     // get the index of the task to unmark
-    const index = tasks.findIndex((obj) => obj.taskId === toUnmark);
-    tasks[index].completed = false;
+    const indexOfItemToUnmark = tasks.findIndex(
+      (obj) => obj.taskId === IDofItemtoUnmark
+    );
+    tasks[indexOfItemToUnmark].completed = false;
+
     renderTasks();
-
-    // update the tasks in local storage
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-
-    // make sure to close the toast
-    closeToast();
+    addToLocalStorage();
   }
 });
+
+const closeForm = function () {
+  form.classList.add("display-none");
+};
+
+const checkIfFormIsDisplayed = function () {
+  return !form.classList.contains("display-none") ? true : false;
+};
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   addNewTaskToArray(addInput.value);
-  form.classList.add("display-none");
-  form.classList.contains("display-none")
-    ? (addTask.textContent = "Add new task!")
-    : (addTask.textContent = "Cancel");
-  renderTasks();
+  cleanInput();
+  closeForm();
+  checkIfFormIsDisplayed()
+    ? (addTask.textContent = "Cancel")
+    : (addTask.textContent = "Add new task");
 });
 
 addTask.addEventListener("click", function () {
   form.classList.toggle("display-none");
-  if (!form.classList.contains("display-none")) addTask.textContent = "Cancel";
-  else if (form.classList.contains("display-none"))
-    addTask.textContent = "Add new task!";
+  checkIfFormIsDisplayed()
+    ? (addTask.textContent = "Cancel")
+    : (addTask.textContent = "Add new task");
 });
 
 deleteLast.addEventListener("click", deleteLastTask);
 
-// TO DO: Store the tasks in the localStorage: done
-window.addEventListener("load", function () {
-  const retrievedTasks = JSON.parse(localStorage.getItem("tasks"));
-  console.log(retrievedTasks);
-  tasks = retrievedTasks;
+// function that retrieves the objects from the local storage
+const getFromLocalStorage = function () {
+  const retrievedItems = JSON.parse(localStorage.getItem("tasks"));
+  tasks = retrievedItems;
   renderTasks();
-});
+};
+
+// console.log(getFromLocalStorage());
+
+window.addEventListener("load", getFromLocalStorage);
+
+// TO DO: Store the tasks in the localStorage: done
+// window.addEventListener("load", function () {
+//   const retrievedTasks = JSON.parse(localStorage.getItem("tasks"));
+//   console.log(retrievedTasks);
+//   tasks = retrievedTasks;
+//   renderTasks();
+// });
 // TO DO: Add the ability to mark the task as completed: done
 // TO DO: After a task is marked as completed, make the corresponding button disabled: done
 // TO DO: have an option to unmark a task: done
@@ -179,9 +186,7 @@ window.addEventListener("load", function () {
 
 clearList.addEventListener("click", function () {
   tasks = [];
-  // hide the form
-  // form.classList.add("display-none");
-  //
+  addToLocalStorage();
   renderTasks();
 });
 
@@ -223,6 +228,9 @@ const getCurrentDate = function () {
 };
 
 const initApp = function () {
+  tasks = JSON.parse(localStorage.getItem("tasks"));
+  addToLocalStorage();
+  renderTasks();
   curDateEl.textContent = getCurrentDate();
   casualQuestionEl.textContent = "What are your plans for today?";
 };

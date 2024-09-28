@@ -1,0 +1,7 @@
+do I need each button to have a taskId? - I need to know what object to delete
+
+- create like a placeholder task and display it in the beginning
+
+- add a functionality to be able to open the form with the "CTRL" button
+
+- re-do the renderTasks() function and make it render based on a given array
