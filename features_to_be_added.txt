@@ -1,7 +1,10 @@
 do I need each button to have a taskId? - I need to know what object to delete
 
-- create like a placeholder task and display it in the beginning
+- create like a placeholder task and display it in the beginning (kind of done - recheck)
 
-- add a functionality to be able to open the form with the "CTRL" button
+- add a functionality to be able to open the form with the "CTRL" button (done)
 
-- re-do the renderTasks() function and make it render based on a given array
+- re-do the renderTasks() function and make it render based on a given array (done)
+
+- the day in the left sidebar should contain the date --> 
+Day 29th of September 2024

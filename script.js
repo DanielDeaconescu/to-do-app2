@@ -36,21 +36,21 @@ const addNewTaskToArray = function (task) {
   addToLocalStorage();
 
   // render the updated tasks
-  renderTasks();
+  renderTasks(tasks);
 };
 
 const deleteLastTask = function () {
   tasks.pop();
-  renderTasks();
+  renderTasks(tasks);
 };
 
 // render the tasks on the page
 // function to clean the input
 const cleanInput = () => (addInput.value = "");
 
-const renderTasks = function () {
+const renderTasks = function (givenArray) {
   listTasks.innerHTML = "";
-  tasks.forEach((task) =>
+  givenArray.forEach((task) =>
     listTasks.insertAdjacentHTML(
       "beforeend",
       `<li class="task ${task.completed ? "completed" : "not-completed"}">
@@ -102,7 +102,7 @@ document.querySelector(".list").addEventListener("click", function (e) {
     );
     tasks.splice(indexOfTheItemToRemove, 1);
     addToLocalStorage();
-    renderTasks();
+    renderTasks(tasks);
   }
   // marking tasks as completed
   if (e.target.classList.contains("mark-completed")) {
@@ -115,7 +115,7 @@ document.querySelector(".list").addEventListener("click", function (e) {
     );
     tasks[indexOfItemToMarkCompleted].completed = true;
 
-    renderTasks();
+    renderTasks(tasks);
     addToLocalStorage();
   }
 
@@ -151,12 +151,15 @@ form.addEventListener("submit", function (e) {
     : (addTask.textContent = "Add new task");
 });
 
-addTask.addEventListener("click", function () {
+const toggleAddNewTaskForm = function () {
   form.classList.toggle("display-none");
   checkIfFormIsDisplayed()
     ? (addTask.textContent = "Cancel")
     : (addTask.textContent = "Add new task");
-});
+  addInput.focus();
+};
+
+addTask.addEventListener("click", toggleAddNewTaskForm);
 
 deleteLast.addEventListener("click", deleteLastTask);
 
@@ -164,30 +167,17 @@ deleteLast.addEventListener("click", deleteLastTask);
 const getFromLocalStorage = function () {
   const retrievedItems = JSON.parse(localStorage.getItem("tasks"));
   tasks = retrievedItems;
-  renderTasks();
+  renderTasks(tasks);
 };
 
 // console.log(getFromLocalStorage());
 
 window.addEventListener("load", getFromLocalStorage);
 
-// TO DO: Store the tasks in the localStorage: done
-// window.addEventListener("load", function () {
-//   const retrievedTasks = JSON.parse(localStorage.getItem("tasks"));
-//   console.log(retrievedTasks);
-//   tasks = retrievedTasks;
-//   renderTasks();
-// });
-// TO DO: Add the ability to mark the task as completed: done
-// TO DO: After a task is marked as completed, make the corresponding button disabled: done
-// TO DO: have an option to unmark a task: done
-// TO DO: Make the form appear dynamically: done
-// TO DO: Button to clear the list
-
 clearList.addEventListener("click", function () {
   tasks = [];
   addToLocalStorage();
-  renderTasks();
+  renderTasks(tasks);
 });
 
 // TO DO: Display the current day: done
@@ -228,14 +218,20 @@ const getCurrentDate = function () {
 };
 
 const initApp = function () {
-  tasks = JSON.parse(localStorage.getItem("tasks"));
+  // tasks = JSON.parse(localStorage.getItem("tasks"));
+  tasks = [{ taskName: "placeholder task", completed: false, taskId: 12345 }];
   addToLocalStorage();
-  renderTasks();
+  renderTasks(tasks);
   curDateEl.textContent = getCurrentDate();
   casualQuestionEl.textContent = "What are your plans for today?";
 };
 
 initApp();
+
+// functionality to open the form with "CTRL"
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Control") toggleAddNewTaskForm();
+});
 
 // TO DO: add a button to mark the day as completed and when clicked, have the day displayed in a sidebar on the left and when I click on that specific date, have all the corresponding tasks displayed ---> we would need to create a new array of "days" which will store every day as an object
 // TO DO: Display fireworks every time a task is completed
