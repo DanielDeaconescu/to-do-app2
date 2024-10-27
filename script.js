@@ -1,6 +1,7 @@
 "use strict";
 
 let tasks = [{ taskName: "test", completed: true, taskId: 1234 }];
+let completedDays = [];
 
 const addTask = document.querySelector(".add-task");
 const form = document.querySelector(".add-task-form");
@@ -13,6 +14,43 @@ const toast = document.querySelector(".alert-custom");
 const closeToastButton = document.querySelector(".alert-custom-close");
 const overlay = document.querySelector(".overlay");
 const clearList = document.querySelector(".clear-list");
+const daysList = document.querySelector(".days-list");
+const markDayCompletedButton = document.querySelector(".mark-day-completed");
+
+// a function that adds a day to the completedDays
+const addDay = function () {
+  // calculate the current date
+  const date = new Date();
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const fullYear = date.getFullYear().toString();
+  const finalDate = `Day ${day}-${month}-${fullYear}`;
+
+  // create a day object
+  const newDay = {
+    date: finalDate,
+    completed: false,
+    dayNumber: 0,
+  };
+
+  completedDays.push(newDay);
+};
+
+// a function that takes an array of days as input and renders the days in the left sidebar
+const renderDays = function (arrayOfDays) {
+  daysList.innerHTML = "";
+  arrayOfDays.forEach((day) =>
+    daysList.insertAdjacentHTML("afterbegin", `<li>${day.date}</li>`)
+  );
+};
+
+renderDays(completedDays);
+
+markDayCompletedButton.addEventListener("click", function () {
+  addDay();
+  renderDays(completedDays);
+  console.log(completedDays);
+});
 
 // create a function that takes the user's input and adds it to the tasks array
 

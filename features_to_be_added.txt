@@ -6,5 +6,12 @@ do I need each button to have a taskId? - I need to know what object to delete
 
 - re-do the renderTasks() function and make it render based on a given array (done)
 
+- add a button that will mark the day as completed
+	- the newDay object should have the completed set 	to true when "mark as completed" is pressed
+	- the day number should be incremented in ascending 	order
+	- save the completedDays to localStorage and read 	from there when the app is loaded
+	- after the day is marked as completed, wipe out 	everything and just display a congratulations 	message
+	- I should be able to mark the day as completed 	once?
+
 - the day in the left sidebar should contain the date --> 
 Day 29th of September 2024
