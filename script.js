@@ -16,6 +16,7 @@ const overlay = document.querySelector(".overlay");
 const clearList = document.querySelector(".clear-list");
 const daysList = document.querySelector(".days-list");
 const markDayCompletedButton = document.querySelector(".mark-day-completed");
+const appInner = document.querySelector(".app-inner");
 
 // a function that adds a day to the completedDays
 const addDay = function () {
@@ -49,18 +50,20 @@ renderDays(completedDays);
 markDayCompletedButton.addEventListener("click", function () {
   addDay();
   renderDays(completedDays);
-  console.log(completedDays);
+  tasks = [];
+  renderTasks(tasks);
+  listTasks.insertAdjacentHTML(
+    "beforebegin",
+    "<h5>Congratulations, you have completed all the tasks from the today's list! 🎉</h5>"
+  );
 });
 
 // create a function that takes the user's input and adds it to the tasks array
 
 // function that adds the updated array to the local storage
 
-const addToLocalStorage = function () {
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-};
-
 const addNewTaskToArray = function (task) {
+  document.querySelector(".initial-message").classList.add("display-none");
   const newTaskObject = {
     taskName: task,
     completed: false,
@@ -94,11 +97,15 @@ const renderTasks = function (givenArray) {
       `<li class="task ${task.completed ? "completed" : "not-completed"}">
       <div class="task-name" data-id="${task.taskId}">${task.taskName}</div>
       <div class="functionality">
-        <button data-id="${task.taskId}" class="delete">Delete</button>
-        <button data-id="${task.taskId}" class="mark-completed" ${
+        <button data-id="${
+          task.taskId
+        }" class="btn btn-secondary delete">Delete</button>
+        <button data-id="${
+          task.taskId
+        }" class="btn btn-secondary mark-completed" ${
         task.completed ? "disabled" : ""
       }>Mark as completed</button>
-      <button data-id="${task.taskId}" class="unmark ${
+      <button data-id="${task.taskId}" class="btn btn-secondary unmark ${
         task.completed ? "" : "display-none"
       }">Unmark</button>
       </div>
@@ -166,7 +173,7 @@ document.querySelector(".list").addEventListener("click", function (e) {
     );
     tasks[indexOfItemToUnmark].completed = false;
 
-    renderTasks();
+    renderTasks(tasks);
     addToLocalStorage();
   }
 });
@@ -195,6 +202,10 @@ const toggleAddNewTaskForm = function () {
     ? (addTask.textContent = "Cancel")
     : (addTask.textContent = "Add new task");
   addInput.focus();
+};
+
+const addToLocalStorage = function () {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
 addTask.addEventListener("click", toggleAddNewTaskForm);
@@ -257,7 +268,14 @@ const getCurrentDate = function () {
 
 const initApp = function () {
   // tasks = JSON.parse(localStorage.getItem("tasks"));
-  tasks = [{ taskName: "placeholder task", completed: false, taskId: 12345 }];
+  tasks = [];
+  if (tasks.length === 0) {
+    listTasks.insertAdjacentHTML(
+      "beforebegin",
+      `<h5 class="initial-message">Begin by adding a new task on your list! ⚒</h5>`
+    );
+  }
+
   addToLocalStorage();
   renderTasks(tasks);
   curDateEl.textContent = getCurrentDate();

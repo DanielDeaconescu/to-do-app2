@@ -15,8 +15,8 @@
   </head>
   <body>
     <div class="container-fluid whole-app">
-      <div class="row">
-        <div class="col-md-4 left-sidebar">
+      <div class="row w-100">
+        <div class="col-md-4 col-sm-4 left-sidebar">
           <div>
             <ul class="days-list">
               <li>Day 1</li>
@@ -26,33 +26,46 @@
             </ul>
           </div>
         </div>
-        <div class="col-md-8 right-section">
+        <div class="col-md-8 col-sm-8 right-section">
           <div>
             <h3 class="cur-date"></h3>
             <p class="casual-question"></p>
             <h4>To do:</h4>
-            <div class="buttons">
-              <button class="add-task">Add new task!</button>
-              <!-- <button class="wipe-memory">Wipe memory!</button> -->
-              <button class="delete-last">Delete last task</button>
-              <!-- <button class="test">Test</button> -->
-              <button class="clear-list">Clear the list</button>
+            <div class="app-inner">
+              <div class="buttons">
+                <button class="add-task btn btn-secondary">
+                  Add new task!
+                </button>
+                <!-- <button class="wipe-memory">Wipe memory!</button> -->
+                <button class="delete-last btn btn-secondary">
+                  Delete last task
+                </button>
+                <!-- <button class="test">Test</button> -->
+                <button class="clear-list btn btn-secondary">
+                  Clear the list
+                </button>
+              </div>
+
+              <form class="add-task-form display-none">
+                <h5>Write down the new task below</h5>
+                <input
+                  class="add-task-input"
+                  type="text"
+                  value=""
+                  placeholder="add new task"
+                />
+              </form>
+
+              <ul class="list">
+                <li>Task 1</li>
+                <li>Task 2</li>
+                <li>Task 3</li>
+              </ul>
+
+              <button class="mark-day-completed btn btn-secondary">
+                Mark day as completed!
+              </button>
             </div>
-            <form class="add-task-form display-none">
-              <h5>Write down the new task below</h5>
-              <input
-                class="add-task-input"
-                type="text"
-                value=""
-                placeholder="add new task"
-              />
-            </form>
-            <ul class="list">
-              <li>Task 1</li>
-              <li>Task 2</li>
-              <li>Task 3</li>
-            </ul>
-            <button class="mark-day-completed">Mark day as completed!</button>
           </div>
         </div>
       </div>
